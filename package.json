@@ -1,0 +1,20 @@
+{
+  "name": "mozart",
+  "version": "0.0.0",
+  "description": "A new approach to classical inheritance in JavaScript.",
+  "main": "index.js",
+  "author": "philipwalton",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/philipwalton/mozart.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/philipwalton/mozart/issues"
+  },
+  "homepage": "https://github.com/philipwalton/mozart"
+}
