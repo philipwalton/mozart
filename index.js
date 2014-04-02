@@ -90,7 +90,7 @@ Klass.prototype.make = function() {
   }
 
   // Add methods to the constructor.
-  this.Ctor.extend = this.Ctor.subclass = subclass;
+  this.Ctor.subclass = subclass;
   this.Ctor.final = final;
 
   // Associate this Klass instance with its constructor.
