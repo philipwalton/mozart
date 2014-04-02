@@ -11,10 +11,13 @@
     "type": "git",
     "url": "git://github.com/philipwalton/mozart.git"
   },
-  "author": "",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/philipwalton/mozart/issues"
   },
-  "homepage": "https://github.com/philipwalton/mozart"
+  "homepage": "https://github.com/philipwalton/mozart",
+  "devDependencies": {
+    "tape": "^2.12.1",
+    "jshint": "~2.5.0"
+  }
 }
