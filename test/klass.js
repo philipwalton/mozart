@@ -1,6 +1,6 @@
 var test = require('tape');
 var sinon = require('sinon');
-var Class = require('../lib/klass');
+var Class = require('../lib/class');
 
 test('Class#constructor'
   + ' accepts a definition as its only parameter.', function(t) {

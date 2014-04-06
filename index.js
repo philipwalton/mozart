@@ -1,4 +1,4 @@
-var Class = require('./lib/klass');
+var Class = require('./lib/class');
 
 // Expose a factory function to create new Class instances.
 module.exports = function(name, definition) {
