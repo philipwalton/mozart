@@ -12,7 +12,7 @@ test('Class#constructor'
 
   t.equal(cls.definition, definition);
   t.notOk(cls.Ctor.name);
-  t.notOk(cls.parentClass);
+  t.notOk(cls.parent);
 });
 
 test('Class#constructor'
@@ -25,7 +25,7 @@ test('Class#constructor'
 
   t.equal(cls.definition, definition);
   t.equal(cls.Ctor.name, 'Foo');
-  t.notOk(cls.parentClass);
+  t.notOk(cls.parent);
 });
 
 test('Class#constructor'
@@ -34,12 +34,12 @@ test('Class#constructor'
   t.plan(3);
 
   var definition = function() {};
-  var parentClass = new Class(function() {});
-  var cls = new Class(definition, parentClass);
+  var parent = new Class(function() {});
+  var cls = new Class(definition, parent);
 
   t.equal(cls.definition, definition);
   t.notOk(cls.Ctor.name);
-  t.equal(cls.parentClass, parentClass);
+  t.equal(cls.parent, parent);
 });
 
 test('Class#constructor'
@@ -48,12 +48,12 @@ test('Class#constructor'
   t.plan(3);
 
   var definition = function() {};
-  var parentClass = new Class(function() {});
-  var cls = new Class('Bar', definition, parentClass);
+  var parent = new Class(function() {});
+  var cls = new Class('Bar', definition, parent);
 
   t.equal(cls.definition, definition);
   t.equal(cls.Ctor.name, 'Bar');
-  t.equal(cls.parentClass, parentClass);
+  t.equal(cls.parent, parent);
 });
 
 test('Class#constructor'
@@ -69,57 +69,77 @@ test('Class#constructor'
 test('Class#constructor'
   + ' sets up the inheritance chain when given a parent Class.', function(t) {
 
-  t.plan(5);
+  t.plan(4);
 
-  var parentClass = new Class(function() {});
-  var cls = new Class(function() {}, parentClass);
+  var parent = new Class(function() {});
+  var cls = new Class(function() {}, parent);
 
-  t.equal(cls.parentClass, parentClass);
-  t.equal(cls.Parent, parentClass.Ctor);
-  t.equal(cls.Ctor.super_, parentClass.Ctor); // Node style `super_`.
-  t.equal(cls.Ctor.prototype.super, parentClass.Ctor.prototype);
-  t.equal(cls.protectedMethods.super, parentClass.protectedMethods);
+  t.equal(cls.parent, parent);
+  t.equal(cls.Ctor.super_, parent.Ctor); // Node style `super_`.
+  t.equal(cls.Ctor.prototype.super, parent.Ctor.prototype);
+  t.equal(cls.protectedMethods.super, parent.protectedMethods);
 });
 
 test('Class#constructor'
   + ' creates the protected and private key and method objects', function(t) {
 
-  t.plan(17);
+  t.plan(4);
 
-  var parentClass = new Class(function() {});
-  var cls = new Class(function() {}, parentClass);
-  var unrelatedClass = new Class(function() {});
-
-  t.ok(parentClass.protectedKey);
-  t.ok(parentClass.protectedMethods);
-  t.ok(parentClass.privateKey);
-  t.ok(parentClass.privateMethods);
+  var cls = new Class(function() {});
 
   t.ok(cls.protectedKey);
   t.ok(cls.protectedMethods);
   t.ok(cls.privateKey);
   t.ok(cls.privateMethods);
+});
 
-  t.ok(unrelatedClass.protectedKey);
-  t.ok(unrelatedClass.protectedMethods);
-  t.ok(unrelatedClass.privateKey);
-  t.ok(unrelatedClass.privateMethods);
+test('Class#constructor'
+  + ' creates protected keys that are shared within class heirachies, but not'
+  + ' unrelated class instances.', function(t) {
 
-  // Protected keys are shared within class heirachies, but not
-  // between unrelated class instances.
-  t.equal(cls.protectedKey, parentClass.protectedKey);
-  t.notEqual(cls.protectedKey, unrelatedClass.protectedKey);
-  t.notEqual(parentClass.protectedKey, unrelatedClass.protectedKey);
+  t.plan(3);
 
-  // Protected method objects have their parent class protected
-  // method objects in their prototype chain.
+  var parent = new Class(function() {});
+  var cls = new Class(function() {}, parent);
+  var unrelated = new Class(function() {});
+
+  t.equal(cls.protectedKey, parent.protectedKey);
+  t.notEqual(cls.protectedKey, unrelated.protectedKey);
+  t.notEqual(parent.protectedKey, unrelated.protectedKey);
+});
+
+test('Class#constructor'
+  + ' creates protected method objects that have their parent class\'s'
+  + ' protected method object as their prototype.', function(t) {
+
+  t.plan(1);
+
+  var parent = new Class(function() {});
+  var cls = new Class(function() {}, parent);
+
   t.equal(
     Object.getPrototypeOf(cls.protectedMethods),
-    parentClass.protectedMethods
+    parent.protectedMethods
   );
-  t.notEqual(
-    Object.getPrototypeOf(unrelatedClass.protectedMethods),
-    parentClass.protectedMethods
+});
+
+test('Class#constructor'
+  + ' creates protected keys that return instances with the class\'s protected'
+  + ' methods object as their prototype (even though the protected key'
+  + ' itself is shared by all classes in the heirarchy)', function(t) {
+
+  t.plan(2);
+
+  var parent = new Class(function() {});
+  var cls = new Class(function() {}, parent);
+
+  t.equal(
+    Object.getPrototypeOf(parent.protectedKey(new parent.Ctor())),
+    parent.protectedMethods
+  );
+  t.equal(
+    Object.getPrototypeOf(parent.protectedKey(new cls.Ctor())),
+    cls.protectedMethods
   );
 });
 
