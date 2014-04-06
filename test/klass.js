@@ -69,7 +69,7 @@ test('Klass#constructor'
 test('Klass#constructor'
   + ' sets up the inheritance chain when given a parent Klass.', function(t) {
 
-  t.plan(4);
+  t.plan(5);
 
   var parentKlass = new Klass(function() {});
   var klass = new Klass(function() {}, parentKlass);
@@ -78,6 +78,7 @@ test('Klass#constructor'
   t.equal(klass.Parent, parentKlass.Ctor);
   t.equal(klass.Ctor.super_, parentKlass.Ctor); // Node style `super_`.
   t.equal(klass.Ctor.prototype.super, parentKlass.Ctor.prototype);
+  t.equal(klass.protectedMethods.super, parentKlass.protectedMethods);
 });
 
 test('Klass#constructor'
