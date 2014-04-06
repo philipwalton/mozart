@@ -18,6 +18,7 @@
   "homepage": "https://github.com/philipwalton/mozart",
   "devDependencies": {
     "tape": "^2.12.1",
-    "jshint": "~2.5.0"
+    "jshint": "^2.5.0",
+    "sinon": "^1.9.1"
   }
 }

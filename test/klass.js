@@ -154,3 +154,49 @@ test('Klass#construct'
     klass.privateMethods
   ));
 });
+
+test('Klass#construct'
+  + ' returns a constructor that can subclass itself.', function(t) {
+
+  t.plan(2);
+
+  var klass = new Klass(function() {});
+  var Ctor = klass.construct();
+  var SubCtor = Ctor.subclass(function() {});
+  var subInst = new SubCtor();
+
+  t.ok(subInst instanceof Ctor);
+  t.equal(SubCtor.super_, Ctor);
+});
+
+test('Klass#construct'
+  + ' returns a constructor that can prevent further'
+  + ' subclassing.', function(t) {
+
+  t.plan(1);
+
+  var klass = new Klass(function() {});
+  var Ctor = klass.construct();
+  var SubCtor = Ctor.subclass(function() {});
+  SubCtor.final();
+
+  t.throws(function() {
+    SubCtor.subclass(function() {});
+  });
+});
+
+test('Klass#construct'
+  + ' returnes a constructor that, when invoked, will invoke the'
+  + ' init method on the prototype.', function(t) {
+
+  t.plan(1);
+
+  var init = sinon.spy();
+  var klass = new Klass(function(proto) {
+    proto.init = init;
+  });
+  var Ctor = klass.construct();
+
+  new Ctor('foo', 'bar');
+  t.ok(init.calledWith('foo', 'bar'));
+});
