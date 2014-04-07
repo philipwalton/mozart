@@ -9099,7 +9099,7 @@ var Stream = require('stream');
 var deepEqual = require('deep-equal');
 var defined = require('defined');
 var path = require('path');
-var inherits = require('util').inherits;
+var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
 
 module.exports = Test;
@@ -9115,7 +9115,7 @@ var getTestArgs = function (name_, opts_, cb_) {
     var name = '(anonymous)';
     var opts = {};
     var cb;
-
+    
     for (var i = 0; i < arguments.length; i++) {
         var arg = arguments[i];
         var t = typeof arg;
@@ -9134,9 +9134,9 @@ var getTestArgs = function (name_, opts_, cb_) {
 
 function Test (name_, opts_, cb_) {
     var self = this;
-
+    
     var args = getTestArgs(name_, opts_, cb_);
-
+    
     this.readable = true;
     this.name = args.name || '(anonymous)';
     this.assertCount = 0;
@@ -9176,13 +9176,13 @@ Test.prototype.test = function (name, opts, cb) {
     t.on('prerun', function () {
         self.assertCount++;
     })
-
+    
     if (!self._pendingAsserts()) {
         nextTick(function () {
             self._end();
         });
     }
-
+    
     nextTick(function() {
         if (!self._plan && self.pendingCount == self._progeny.length) {
             self._end();
@@ -9199,12 +9199,12 @@ Test.prototype.plan = function (n) {
     this.emit('plan', n);
 };
 
-Test.prototype.end = function (err) {
+Test.prototype.end = function (err) { 
     var self = this;
     if (arguments.length >= 1) {
         this.ifError(err);
     }
-
+    
     if (this.calledEnd) {
         this.fail('.end() called twice');
     }
@@ -9220,7 +9220,7 @@ Test.prototype._end = function (err) {
         t.run();
         return;
     }
-
+    
     if (!this.ended) this.emit('end');
     var pendingAsserts = this._pendingAsserts();
     if (!this._planError && this._plan !== undefined && pendingAsserts) {
@@ -9262,7 +9262,7 @@ Test.prototype._pendingAsserts = function () {
 Test.prototype._assert = function assert (ok, opts) {
     var self = this;
     var extra = opts.extra || {};
-
+    
     var res = {
         id : self.assertCount ++,
         ok : Boolean(ok),
@@ -9277,40 +9277,40 @@ Test.prototype._assert = function assert (ok, opts) {
         res.expected = defined(extra.expected, opts.expected);
     }
     this._ok = Boolean(this._ok && ok);
-
+    
     if (!ok) {
         res.error = defined(extra.error, opts.error, new Error(res.name));
     }
-
+    
     var e = new Error('exception');
     var err = (e.stack || '').split('\n');
     var dir = path.dirname(__dirname) + '/';
-
+    
     for (var i = 0; i < err.length; i++) {
         var m = /^\s*\bat\s+(.+)/.exec(err[i]);
         if (!m) continue;
-
+        
         var s = m[1].split(/\s+/);
         var filem = /(\/[^:\s]+:(\d+)(?::(\d+))?)/.exec(s[1]);
         if (!filem) {
             filem = /(\/[^:\s]+:(\d+)(?::(\d+))?)/.exec(s[3]);
-
+            
             if (!filem) continue;
         }
-
+        
         if (filem[1].slice(0, dir.length) === dir) continue;
-
+        
         res.functionName = s[0];
         res.file = filem[1];
         res.line = Number(filem[2]);
         if (filem[3]) res.column = filem[3];
-
+        
         res.at = m[1];
         break;
     }
-
+    
     self.emit('result', res);
-
+    
     var pendingAsserts = self._pendingAsserts();
     if (!pendingAsserts) {
         if (extra.exiting) {
@@ -9321,7 +9321,7 @@ Test.prototype._assert = function assert (ok, opts) {
             });
         }
     }
-
+    
     if (!self._planError && pendingAsserts < 0) {
         self._planError = true;
         self.fail('plan != count', {
@@ -9556,7 +9556,7 @@ Test.skip = function (name_, _opts, _cb) {
 // vim: set softtabstop=4 shiftwidth=4:
 
 }).call(this,require("/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),"/../node_modules/tape/lib")
-},{"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"deep-equal":40,"defined":43,"events":6,"path":9,"stream":11,"util":19}],40:[function(require,module,exports){
+},{"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"deep-equal":40,"defined":43,"events":6,"inherits":44,"path":9,"stream":11}],40:[function(require,module,exports){
 var pSlice = Array.prototype.slice;
 var objectKeys = require('./lib/keys.js');
 var isArguments = require('./lib/is_arguments.js');
