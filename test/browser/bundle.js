@@ -7,8 +7,7 @@ module.exports = function(name, definition) {
 };
 
 },{"./lib/class":2}],2:[function(require,module,exports){
-var createKey = require('../../private-parts').createKey;
-
+var createKey = require('private-parts').createKey;
 
 
 /**
@@ -233,7 +232,7 @@ function capitalize(string) {
 
 module.exports = Class;
 
-},{"../../private-parts":52}],3:[function(require,module,exports){
+},{"private-parts":20}],3:[function(require,module,exports){
 /**
  * The buffer module from node.js, for the browser.
  *
@@ -4799,6 +4798,71 @@ function hasOwnProperty(obj, prop) {
 
 }).call(this,require("/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./support/isBuffer":18,"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"inherits":7}],20:[function(require,module,exports){
+/**
+ * A function that returns a function that allows you to associate
+ * a public object with its private counterpart.
+ * @param {Function|Object} factory An optional argument that, is present, will
+ *   be used to create new objects in the store.
+ *   If factory is a function, it will be invoked with the key as an argument
+ *   and the return value will be the private instance.
+ *   If factory is an object, the private instance will be a new object with
+ *   factory as it's prototype.
+ */
+function createKey(factory){
+
+  // Create the factory based on the type of object passed.
+  factory = typeof factory == 'function'
+    ? factory
+    : createBound(factory);
+
+  // Store is used to map public objects to private objects.
+  var store = new WeakMap();
+
+  // Seen is used to track existing private objects.
+  var seen = new WeakMap();
+
+  /**
+   * An accessor function to get private instances from the store.
+   * @param {Object} key The public object that is associated with a private
+   *   object in the store.
+   */
+  return function(key) {
+    if (typeof key != 'object') return;
+
+    var value = store.get(key);
+    if (!value) {
+      // Make sure key isn't already the private instance of some existing key.
+      // This check helps prevent accidental double privatizing.
+      if (seen.has(key)) {
+        value = key;
+      } else {
+        value = factory(key);
+        store.set(key, value);
+        seen.set(value, true);
+      }
+    }
+    return value;
+  };
+}
+
+/**
+ * Function.prototype.bind doesn't work in PhantomJS or Safari 5.1,
+ * so we have to manually bind until support is dropped.
+ * This function is effectively `Object.create.bind(null, obj, {})`
+ * @param {Object} obj The first bound parameter to `Object.create`
+ * @return {Function} The bound function.
+ */
+function createBound(obj) {
+  return function() {
+    return Object.create(obj || Object.prototype);
+  };
+}
+
+module.exports = {
+  createKey: createKey
+};
+
+},{}],21:[function(require,module,exports){
 /*jslint eqeqeq: false, onevar: false, forin: true, nomen: false, regexp: false, plusplus: false*/
 /*global module, require, __dirname, document*/
 /**
@@ -5182,7 +5246,7 @@ var sinon = (function (formatio) {
     return sinon;
 }(typeof formatio == "object" && formatio));
 
-},{"./sinon/assert":21,"./sinon/behavior":22,"./sinon/call":23,"./sinon/collection":24,"./sinon/match":25,"./sinon/mock":26,"./sinon/sandbox":27,"./sinon/spy":28,"./sinon/stub":29,"./sinon/test":30,"./sinon/test_case":31,"formatio":33,"util":19}],21:[function(require,module,exports){
+},{"./sinon/assert":22,"./sinon/behavior":23,"./sinon/call":24,"./sinon/collection":25,"./sinon/match":26,"./sinon/mock":27,"./sinon/sandbox":28,"./sinon/spy":29,"./sinon/stub":30,"./sinon/test":31,"./sinon/test_case":32,"formatio":34,"util":19}],22:[function(require,module,exports){
 (function (global){
 /**
  * @depend ../sinon.js
@@ -5383,7 +5447,7 @@ var sinon = (function (formatio) {
 }(typeof sinon == "object" && sinon || null, typeof window != "undefined" ? window : (typeof self != "undefined") ? self : global));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../sinon":20}],22:[function(require,module,exports){
+},{"../sinon":21}],23:[function(require,module,exports){
 (function (process){
 /**
  * @depend ../sinon.js
@@ -5718,7 +5782,7 @@ var sinon = (function (formatio) {
     }
 }(typeof sinon == "object" && sinon || null));
 }).call(this,require("/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"../sinon":20,"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8}],23:[function(require,module,exports){
+},{"../sinon":21,"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8}],24:[function(require,module,exports){
 /**
   * @depend ../sinon.js
   * @depend match.js
@@ -5923,7 +5987,7 @@ var sinon = (function (formatio) {
 }(typeof sinon == "object" && sinon || null));
 
 
-},{"../sinon":20}],24:[function(require,module,exports){
+},{"../sinon":21}],25:[function(require,module,exports){
 /**
  * @depend ../sinon.js
  * @depend stub.js
@@ -6078,7 +6142,7 @@ var sinon = (function (formatio) {
     }
 }(typeof sinon == "object" && sinon || null));
 
-},{"../sinon":20}],25:[function(require,module,exports){
+},{"../sinon":21}],26:[function(require,module,exports){
 /* @depend ../sinon.js */
 /*jslint eqeqeq: false, onevar: false, plusplus: false*/
 /*global module, require, sinon*/
@@ -6323,7 +6387,7 @@ var sinon = (function (formatio) {
     }
 }(typeof sinon == "object" && sinon || null));
 
-},{"../sinon":20}],26:[function(require,module,exports){
+},{"../sinon":21}],27:[function(require,module,exports){
 /**
  * @depend ../sinon.js
  * @depend stub.js
@@ -6774,7 +6838,7 @@ var sinon = (function (formatio) {
     }
 }(typeof sinon == "object" && sinon || null));
 
-},{"../sinon":20,"./match":25}],27:[function(require,module,exports){
+},{"../sinon":21,"./match":26}],28:[function(require,module,exports){
 /**
  * @depend ../sinon.js
  * @depend collection.js
@@ -6918,7 +6982,7 @@ if (typeof module !== 'undefined' && module.exports) {
     }
 }());
 
-},{"../sinon":20,"./util/fake_timers":32}],28:[function(require,module,exports){
+},{"../sinon":21,"./util/fake_timers":33}],29:[function(require,module,exports){
 /**
   * @depend ../sinon.js
   * @depend call.js
@@ -7327,7 +7391,7 @@ if (typeof module !== 'undefined' && module.exports) {
     }
 }(typeof sinon == "object" && sinon || null));
 
-},{"../sinon":20}],29:[function(require,module,exports){
+},{"../sinon":21}],30:[function(require,module,exports){
 /**
  * @depend ../sinon.js
  * @depend spy.js
@@ -7488,7 +7552,7 @@ if (typeof module !== 'undefined' && module.exports) {
     }
 }(typeof sinon == "object" && sinon || null));
 
-},{"../sinon":20}],30:[function(require,module,exports){
+},{"../sinon":21}],31:[function(require,module,exports){
 /**
  * @depend ../sinon.js
  * @depend stub.js
@@ -7565,7 +7629,7 @@ if (typeof module !== 'undefined' && module.exports) {
     }
 }(typeof sinon == "object" && sinon || null));
 
-},{"../sinon":20}],31:[function(require,module,exports){
+},{"../sinon":21}],32:[function(require,module,exports){
 /**
  * @depend ../sinon.js
  * @depend test.js
@@ -7664,7 +7728,7 @@ if (typeof module !== 'undefined' && module.exports) {
     }
 }(typeof sinon == "object" && sinon || null));
 
-},{"../sinon":20}],32:[function(require,module,exports){
+},{"../sinon":21}],33:[function(require,module,exports){
 (function (global){
 /*jslint eqeqeq: false, plusplus: false, evil: true, onevar: false, browser: true, forin: false*/
 /*global module, require, window*/
@@ -8069,7 +8133,7 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 (function (global){
 ((typeof define === "function" && define.amd && function (m) {
     define("formatio", ["samsam"], m);
@@ -8272,7 +8336,7 @@ if (typeof module !== 'undefined' && module.exports) {
 });
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"samsam":34}],34:[function(require,module,exports){
+},{"samsam":35}],35:[function(require,module,exports){
 ((typeof define === "function" && define.amd && function (m) { define("samsam", m); }) ||
  (typeof module === "object" &&
       function (m) { module.exports = m(); }) || // Node
@@ -8658,7 +8722,7 @@ if (typeof module !== 'undefined' && module.exports) {
     };
 });
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 (function (process){
 var defined = require('defined');
 var createDefaultStream = require('./lib/default_stream');
@@ -8810,7 +8874,7 @@ function createHarness (conf_) {
 }
 
 }).call(this,require("/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"./lib/default_stream":36,"./lib/results":37,"./lib/test":38,"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"defined":42,"through":46}],36:[function(require,module,exports){
+},{"./lib/default_stream":37,"./lib/results":38,"./lib/test":39,"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"defined":43,"through":47}],37:[function(require,module,exports){
 var through = require('through');
 
 module.exports = function () {
@@ -8836,7 +8900,7 @@ module.exports = function () {
     }
 };
 
-},{"through":46}],37:[function(require,module,exports){
+},{"through":47}],38:[function(require,module,exports){
 (function (process){
 var EventEmitter = require('events').EventEmitter;
 var inherits = require('inherits');
@@ -9029,7 +9093,7 @@ function has (obj, prop) {
 }
 
 }).call(this,require("/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"events":6,"inherits":43,"object-inspect":44,"resumer":45,"through":46}],38:[function(require,module,exports){
+},{"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"events":6,"inherits":44,"object-inspect":45,"resumer":46,"through":47}],39:[function(require,module,exports){
 (function (process,__dirname){
 var Stream = require('stream');
 var deepEqual = require('deep-equal');
@@ -9492,7 +9556,7 @@ Test.skip = function (name_, _opts, _cb) {
 // vim: set softtabstop=4 shiftwidth=4:
 
 }).call(this,require("/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),"/../node_modules/tape/lib")
-},{"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"deep-equal":39,"defined":42,"events":6,"path":9,"stream":11,"util":19}],39:[function(require,module,exports){
+},{"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"deep-equal":40,"defined":43,"events":6,"path":9,"stream":11,"util":19}],40:[function(require,module,exports){
 var pSlice = Array.prototype.slice;
 var objectKeys = require('./lib/keys.js');
 var isArguments = require('./lib/is_arguments.js');
@@ -9588,7 +9652,7 @@ function objEquiv(a, b, opts) {
   return true;
 }
 
-},{"./lib/is_arguments.js":40,"./lib/keys.js":41}],40:[function(require,module,exports){
+},{"./lib/is_arguments.js":41,"./lib/keys.js":42}],41:[function(require,module,exports){
 var supportsArgumentsClass = (function(){
   return Object.prototype.toString.call(arguments)
 })() == '[object Arguments]';
@@ -9610,7 +9674,7 @@ function unsupported(object){
     false;
 };
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 exports = module.exports = typeof Object.keys === 'function'
   ? Object.keys : shim;
 
@@ -9621,16 +9685,16 @@ function shim (obj) {
   return keys;
 }
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 module.exports = function () {
     for (var i = 0; i < arguments.length; i++) {
         if (arguments[i] !== undefined) return arguments[i];
     }
 };
 
-},{}],43:[function(require,module,exports){
-module.exports=require(7)
 },{}],44:[function(require,module,exports){
+module.exports=require(7)
+},{}],45:[function(require,module,exports){
 module.exports = function inspect_ (obj, opts, depth, seen) {
     if (!opts) opts = {};
     
@@ -9759,7 +9823,7 @@ function inspectString (str) {
     }
 }
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 (function (process){
 var through = require('through');
 var nextTick = typeof setImmediate !== 'undefined'
@@ -9792,7 +9856,7 @@ module.exports = function (write, end) {
 };
 
 }).call(this,require("/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"through":46}],46:[function(require,module,exports){
+},{"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"through":47}],47:[function(require,module,exports){
 (function (process){
 var Stream = require('stream')
 
@@ -9904,7 +9968,7 @@ function through (write, end, opts) {
 
 
 }).call(this,require("/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"stream":11}],47:[function(require,module,exports){
+},{"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"stream":11}],48:[function(require,module,exports){
 var test = require('tape');
 var ctor = require('../');
 
@@ -9964,7 +10028,7 @@ test('Constructor prototypes can dynamically add accessor methods to themselves'
   t.equal(inst.getBar(), 'BAR');
 });
 
-},{"../":1,"tape":35}],48:[function(require,module,exports){
+},{"../":1,"tape":36}],49:[function(require,module,exports){
 var test = require('tape');
 var sinon = require('sinon');
 var Class = require('../lib/class');
@@ -10214,7 +10278,7 @@ test('Class#construct'
   t.ok(init.calledWith('foo', 'bar'));
 });
 
-},{"../lib/class":2,"sinon":20,"tape":35}],49:[function(require,module,exports){
+},{"../lib/class":2,"sinon":21,"tape":36}],50:[function(require,module,exports){
 var test = require('tape');
 var ctor = require('../');
 
@@ -10262,7 +10326,7 @@ test('README examples.', function(t) {
 
 });
 
-},{"../":1,"tape":35}],50:[function(require,module,exports){
+},{"../":1,"tape":36}],51:[function(require,module,exports){
 var test = require('tape');
 var ctor = require('../');
 
@@ -10284,7 +10348,7 @@ test('It accepts a name and a function and returns a constructor'
   t.equal(Ctor.name, 'Foo');
 });
 
-},{"../":1,"tape":35}],51:[function(require,module,exports){
+},{"../":1,"tape":36}],52:[function(require,module,exports){
 var test = require('tape');
 var sinon = require('sinon');
 var ctor = require('../');
@@ -10486,69 +10550,4 @@ test('Private methods do not have parents.', function(t) {
 });
 
 
-},{"../":1,"sinon":20,"tape":35}],52:[function(require,module,exports){
-/**
- * A function that returns a function that allows you to associate
- * a public object with its private counterpart.
- * @param {Function|Object} factory An optional argument that, is present, will
- *   be used to create new objects in the store.
- *   If factory is a function, it will be invoked with the key as an argument
- *   and the return value will be the private instance.
- *   If factory is an object, the private instance will be a new object with
- *   factory as it's prototype.
- */
-function createKey(factory){
-
-  // Create the factory based on the type of object passed.
-  factory = typeof factory == 'function'
-    ? factory
-    : createBound(factory);
-
-  // Store is used to map public objects to private objects.
-  var store = new WeakMap();
-
-  // Seen is used to track existing private objects.
-  var seen = new WeakMap();
-
-  /**
-   * An accessor function to get private instances from the store.
-   * @param {Object} key The public object that is associated with a private
-   *   object in the store.
-   */
-  return function(key) {
-    if (typeof key != 'object') return;
-
-    var value = store.get(key);
-    if (!value) {
-      // Make sure key isn't already the private instance of some existing key.
-      // This check helps prevent accidental double privatizing.
-      if (seen.has(key)) {
-        value = key;
-      } else {
-        value = factory(key);
-        store.set(key, value);
-        seen.set(value, true);
-      }
-    }
-    return value;
-  };
-}
-
-/**
- * Function.prototype.bind doesn't work in PhantomJS or Safari 5.1,
- * so we have to manually bind until support is dropped.
- * This function is effectively `Object.create.bind(null, obj, {})`
- * @param {Object} obj The first bound parameter to `Object.create`
- * @return {Function} The bound function.
- */
-function createBound(obj) {
-  return function() {
-    return Object.create(obj || Object.prototype);
-  };
-}
-
-module.exports = {
-  createKey: createKey
-};
-
-},{}]},{},[47,48,49,50,51])
+},{"../":1,"sinon":21,"tape":36}]},{},[48,49,50,51,52])
