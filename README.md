@@ -1,11 +1,12 @@
 Mozart
 ======
 
-* [Introduction](#introduction)
-* [Installation](#installation)
-* [Usage](#)
-* [API](#api)
-* [Building and Testing](#testing)
+1. [Introduction](#introduction)
+2. [Installation](#installation)
+3. [Usage](#)
+4. [API](#api)
+5. [Browser and Environment Support](#browser-and-environment-support)
+6. [Building and Testing](#testing)
 
 ## Introduction
 
@@ -147,18 +148,33 @@ Calling `final` on a Mozart constructor prevents it from being subclassed. This 
 
 If this is a concern, make sure to call `final()` on all classes once they no longer needs to be subclassed.
 
+## Browser and Environment Support
+
+Mozart has [been tested](https://ci.testling.com/philipwalton/private-parts) and, with a [WeakMap Polyfill](https://github.com/Benvie/WeakMap), known to work in the following environments.
+
+* Node.js
+* Chrome 6+
+* Firefox 4+
+* Safari 5.1+
+* Internet Explorer 9+
+* Opera 12+
+
+For a list of environments that support WeakMap natively, see [Kangax's ES6 compatibility tables](http://kangax.github.io/es5-compat-table/es6/#WeakMap).
+
 ## Building and Testing
 
-Mozart uses jshint to lint the code and tape to test it:
+To run the tests and build the browser version of the library, use the following commands:
 
 ```sh
-# lint the code
-make lint
-
-# test it
+# Run the node and browser tests.
 make test
 
-# lint and test
+# Build the browser version.
+make build
+
+# Test and build.
 make
 ```
+
+ Mozart uses [Browserify](http://browserify.org/) to build the browser version of the library as well as browser versions of the tests. It uses [Travic-CI](https://travis-ci.org/) to run the tests in Node.js and [Testling](https://ci.testling.com/) to run the tests in actual browsers on each commit.
 
