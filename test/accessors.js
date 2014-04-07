@@ -1,5 +1,5 @@
 var test = require('tape');
-var ctor = require('..');
+var ctor = require('../');
 
 test('Constructor prototypes can dynamically add getters methods to themselves'
   + ' that get protected instance properties.', function(t) {
@@ -7,7 +7,7 @@ test('Constructor prototypes can dynamically add getters methods to themselves'
   t.plan(2);
 
   var Ctor = ctor(function(proto, _) {
-    proto.addGetters('foo', 'bar');
+    this.addGetters('foo', 'bar');
     proto.init = function(foo, bar) {
       _(this).foo = foo;
       _(this).bar = bar;
@@ -25,7 +25,7 @@ test('Constructor prototypes can dynamically add setter methods to themselves'
   t.plan(2);
 
   var Ctor = ctor(function(proto, _) {
-    proto.addSetters('foo', 'bar');
+    this.addSetters('foo', 'bar');
     proto.getFoo = function() {
       return _(this).foo;
     };
@@ -46,8 +46,8 @@ test('Constructor prototypes can dynamically add accessor methods to themselves'
 
   t.plan(2);
 
-  var Ctor = ctor(function(proto) {
-    proto.addAccessors('foo', 'bar');
+  var Ctor = ctor(function() {
+    this.addAccessors('foo', 'bar');
   });
 
   var inst = new Ctor();
