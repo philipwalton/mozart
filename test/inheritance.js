@@ -1,6 +1,6 @@
 var test = require('tape');
 var sinon = require('sinon');
-var ctor = require('..');
+var ctor = require('../');
 
 test('Protected properties can be accessed using the'
   + ' protected key.', function(t) {

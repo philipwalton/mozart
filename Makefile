@@ -3,7 +3,7 @@ bins := ./node_modules/.bin
 src := index.js lib/*.js
 test := test/*.js
 
-all: install lint test
+all: install test build
 
 install:
 	@ npm install
@@ -11,7 +11,26 @@ install:
 lint: $(src) $(test)
 	@ $(bins)/jshint --verbose $^
 
-test: $(test)
-	@ node --harmony $(bins)/tape $^
+# Start node with the harmony flag turned on to run the tests in a native
+# WeakMap environment.
+test-node: lint
+	@ node --harmony $(bins)/tape test/*.js
 
-.PHONY: all install test lint
+# Run the tests in a headless browser using testling and a WeakMap shim.
+test-browser: lint
+	@ cp $(mods)/weakmap/weakmap.js test/browser/weakmap.js
+	@ $(bins)/browserify test/*.js > test/browser/bundle.js
+	@ $(bins)/testling
+
+test: test-node test-browser
+
+mozart.js: install $(src)
+	@ $(bins)/browserify -s Mozart index.js \
+		| $(bins)/uglifyjs \
+		> mozart.js
+
+build: lint mozart.js
+	@ cp $(mods)/weakmap/weakmap.js test/browser/weakmap.js
+
+.PHONY: all install lint test test-node test-browser build
+

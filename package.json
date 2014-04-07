@@ -1,7 +1,7 @@
 {
   "name": "mozart",
   "version": "0.0.0",
-  "description": "A new approach to classical inheritance in JavaScript.",
+  "description": "Bringing public, private, and protected to JavaScript classes.",
   "main": "index.js",
   "author": "philipwalton",
   "scripts": {
@@ -17,8 +17,32 @@
   },
   "homepage": "https://github.com/philipwalton/mozart",
   "devDependencies": {
-    "tape": "^2.12.1",
-    "jshint": "^2.5.0",
-    "sinon": "^1.9.1"
+    "shelljs": "^0.2.6",
+    "semver": "^2.2.1",
+    "colors": "^0.6.2",
+    "moment": "^2.5.1",
+    "tape": "^2.10.2",
+    "sinon": "^1.9.1",
+    "browserify": "^3.32.0",
+    "testling": "^1.6.0",
+    "jshint": "^2.4.4",
+    "uglify-js": "^2.4.12",
+    "weakmap": "^0.0.6"
+  },
+  "testling": {
+    "scripts": "test/browser/weakmap.js",
+    "files": "test/*.js",
+    "browsers": [
+      "chrome/latest",
+      "chrome/canary",
+      "ff/4",
+      "ff/19",
+      "ff/latest",
+      "ff/nightly",
+      "ie/9..latest",
+      "safari/5.1..latest",
+      "opera/12..latest",
+      "opera/next"
+    ]
   }
 }

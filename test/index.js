@@ -1,5 +1,5 @@
 var test = require('tape');
-var ctor = require('..');
+var ctor = require('../');
 
 test('It accepts a function and returns a constructor.', function(t) {
 

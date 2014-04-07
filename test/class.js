@@ -3,6 +3,18 @@ var sinon = require('sinon');
 var Class = require('../lib/class');
 
 test('Class#constructor'
+  + ' accepts no parameters.', function(t) {
+
+  t.plan(3);
+
+  var cls = new Class();
+
+  t.notOk(cls.definition);
+  t.notOk(cls.Ctor.name);
+  t.notOk(cls.parent);
+});
+
+test('Class#constructor'
   + ' accepts a definition as its only parameter.', function(t) {
 
   t.plan(3);
@@ -173,6 +185,20 @@ test('Class#construct'
     cls.privateKey,
     cls.privateMethods
   ));
+});
+
+test('Class#construct'
+  + ' just returns the constructor if no definition exists', function(t) {
+
+  t.plan(2);
+
+  var cls = new Class();
+  var ctor;
+
+  t.doesNotThrow(function() {
+    ctor = cls.construct();
+  });
+  t.ok(ctor);
 });
 
 test('Class#construct'
