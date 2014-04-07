@@ -5,7 +5,7 @@
   "main": "index.js",
   "author": "philipwalton",
   "scripts": {
-    "test": "make test"
+    "test": "make test-node"
   },
   "repository": {
     "type": "git",
