@@ -1,6 +1,8 @@
 Mozart
 ======
 
+[![Build Status](https://secure.travis-ci.org/philipwalton/mozart.png)](https://travis-ci.org/philipwalton/mozart)
+
 1. [Introduction](#introduction)
 2. [Installation](#installation)
 3. [Usage](#)
@@ -150,7 +152,7 @@ If this is a concern, make sure to call `final()` on all classes once they no lo
 
 ## Browser and Environment Support
 
-Mozart has [been tested](https://ci.testling.com/philipwalton/private-parts) and, with a [WeakMap Polyfill](https://github.com/Benvie/WeakMap), known to work in the following environments.
+Mozart has [been tested](https://ci.testling.com/philipwalton/mozart) and, with a [WeakMap Polyfill](https://github.com/Benvie/WeakMap), known to work in the following environments.
 
 * Node.js
 * Chrome 6+
