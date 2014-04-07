@@ -10033,6 +10033,10 @@ var test = require('tape');
 var sinon = require('sinon');
 var Class = require('../lib/class');
 
+function getFunctionName(fn) {
+  return fn.toString().match(/^function\s*([^\s(]*)/)[1];
+}
+
 test('Class#constructor'
   + ' accepts no parameters.', function(t) {
 
@@ -10040,9 +10044,10 @@ test('Class#constructor'
 
   var cls = new Class();
 
+  t.notOk(getFunctionName(cls.Ctor));
   t.notOk(cls.definition);
-  t.notOk(cls.Ctor.name);
   t.notOk(cls.parent);
+
 });
 
 test('Class#constructor'
@@ -10053,8 +10058,8 @@ test('Class#constructor'
   var definition = function() {};
   var cls = new Class(definition);
 
+  t.notOk(getFunctionName(cls.Ctor));
   t.equal(cls.definition, definition);
-  t.notOk(cls.Ctor.name);
   t.notOk(cls.parent);
 });
 
@@ -10066,8 +10071,8 @@ test('Class#constructor'
   var definition = function() {};
   var cls = new Class('Foo', definition);
 
+  t.equal(getFunctionName(cls.Ctor), 'Foo');
   t.equal(cls.definition, definition);
-  t.equal(cls.Ctor.name, 'Foo');
   t.notOk(cls.parent);
 });
 
@@ -10080,8 +10085,8 @@ test('Class#constructor'
   var parent = new Class(function() {});
   var cls = new Class(definition, parent);
 
+  t.notOk(getFunctionName(cls.Ctor));
   t.equal(cls.definition, definition);
-  t.notOk(cls.Ctor.name);
   t.equal(cls.parent, parent);
 });
 
@@ -10094,8 +10099,8 @@ test('Class#constructor'
   var parent = new Class(function() {});
   var cls = new Class('Bar', definition, parent);
 
+  t.equal(getFunctionName(cls.Ctor), 'Bar');
   t.equal(cls.definition, definition);
-  t.equal(cls.Ctor.name, 'Bar');
   t.equal(cls.parent, parent);
 });
 
@@ -10330,6 +10335,10 @@ test('README examples.', function(t) {
 var test = require('tape');
 var ctor = require('../');
 
+function getFunctionName(fn) {
+  return fn.toString().match(/^function\s*([^\s(]*)/)[1];
+}
+
 test('It accepts a function and returns a constructor.', function(t) {
 
   t.plan(1);
@@ -10345,7 +10354,7 @@ test('It accepts a name and a function and returns a constructor'
 
   var Ctor = ctor('Foo', function() {});
   t.equal(Ctor.prototype.constructor, Ctor);
-  t.equal(Ctor.name, 'Foo');
+  t.equal(getFunctionName(Ctor), 'Foo');
 });
 
 },{"../":1,"tape":36}],52:[function(require,module,exports){
