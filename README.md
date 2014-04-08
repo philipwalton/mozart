@@ -5,10 +5,10 @@ Mozart
 
 1. [Introduction](#introduction)
 2. [Installation](#installation)
-3. [Getting Started](#)
+3. [Getting Started](#getting-started)
 4. [API Documentation](#api-documentation)
 5. [Browser and Environment Support](#browser-and-environment-support)
-6. [Building and Testing](#testing)
+6. [Building and Testing](#building-and-testing)
 
 ## Introduction
 
