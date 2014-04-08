@@ -267,12 +267,12 @@ make build
 make
 ```
 
- Mozart uses [Browserify](http://browserify.org/) to build the browser version of the library as well as browser versions of the tests. It uses [Travic-CI](https://travis-ci.org/) to run the tests in Node.js and [Testling](https://ci.testling.com/) to run the tests in actual browsers on each commit.
+Mozart uses [Browserify](http://browserify.org/) to build the browser version of the library as well as browser versions of the tests. It uses [Travic-CI](https://travis-ci.org/) to run the tests in Node.js and [Testling](https://ci.testling.com/) to run the tests in actual browsers on each commit.
 
- ## Feedback and Contributing
+## Feedback and Contributing
 
- While Mozart is a working library it's also a proof-of-concept for how inheritance and privacy could be better in JavaScript. It's not a finished product, it's a work in progress.
+While Mozart is a working library it's also a proof-of-concept for how inheritance and privacy could be better in JavaScript. It's not a finished product, it's a work in progress.
 
- I'm completely willing to listen to feedback and discuss ways to make the API better.
+I'm completely willing to listen to feedback and discuss ways to make the API better.
 
- If you'd like to make a suggestion, feel free to open an issue or submit a pull request.
+If you'd like to make a suggestion, feel free to open an issue or submit a pull request.
