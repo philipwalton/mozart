@@ -17,7 +17,7 @@ Mozart is a full-featured, classical inheritance library for Node.js and the bro
 
 - Simple subclassing.
 - Private and protected methods and properties.
-- Intuitive supermethod calling.
+- Intuitive super method calling.
 - Dynamic getter and setter generation.
 
 Unlike most JS inheritence libraries, Mozart does more than just hide away the prototype boilerplate that nobody likes to remember. It also offers real data encapsulation, similiar to what you'd find to most classical languages. Mozart uses the [Private Parts](https://github.com/philipwalton/private-parts) module so you no longer have to prefix your properties with an underscore and hope that nobody touches them. Your public interface can be exactly what you want it to be.
@@ -97,7 +97,7 @@ var Citizen = ctor(function(proto, _, _protected) {
 });
 ```
 
-The above class definition uses both public and protected methods. The next example subclasses `Citizen`. As you can see, both public and protected methods are able to either inherit methods from their superclass or override them while still being able to invoke their supermethod.
+The above class definition uses both public and protected methods. The next example subclasses `Citizen`. As you can see, both public and protected methods are able to either inherit methods from their superclass or override them while still being able to invoke their super method.
 
 ```javascript
 var Criminal = Citizen.subclass(function(proto, _, _protected) {
