@@ -24,6 +24,8 @@ Unlike most JS inheritence libraries, Mozart does more than just hide away the p
 
 ## Installation
 
+Mozart is built for both Node and the browser. The browser version comes with a UMD wrapper, so it can be used as either an AMD module or as the global variable `mozart`.
+
 To install from NPM:
 
 ```sh
@@ -271,8 +273,8 @@ Mozart uses [Browserify](http://browserify.org/) to build the browser version of
 
 ## Feedback and Contributing
 
-While Mozart is a working library it's also a proof-of-concept for how inheritance and privacy could be better in JavaScript. It's not a finished product, it's a work in progress.
+While Mozart is a working library it's also a proof-of-concept for how inheritance and privacy could be done better in JavaScript. It's not a finished product, it's a work in progress.
 
-I'm completely willing to listen to feedback and discuss ways to make the API better.
+I'm completely willing to listen to feedback and discuss ways to make the API better and more intuitive.
 
 If you'd like to make a suggestion, feel free to open an issue or submit a pull request.

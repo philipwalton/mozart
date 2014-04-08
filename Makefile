@@ -25,7 +25,7 @@ test-browser: lint
 test: test-node test-browser
 
 mozart.js: install $(src)
-	@ $(bins)/browserify -s Mozart index.js \
+	@ $(bins)/browserify -s mozart index.js \
 		| $(bins)/uglifyjs \
 		> mozart.js
 
