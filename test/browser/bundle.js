@@ -9977,9 +9977,9 @@ test('Constructor prototypes can dynamically add getters methods to themselves'
 
   t.plan(2);
 
-  var Ctor = ctor(function(proto, _) {
+  var Ctor = ctor(function(prototype, _) {
     this.addGetters('foo', 'bar');
-    proto.init = function(foo, bar) {
+    prototype.init = function(foo, bar) {
       _(this).foo = foo;
       _(this).bar = bar;
     };
@@ -9995,12 +9995,12 @@ test('Constructor prototypes can dynamically add setter methods to themselves'
 
   t.plan(2);
 
-  var Ctor = ctor(function(proto, _) {
+  var Ctor = ctor(function(prototype, _) {
     this.addSetters('foo', 'bar');
-    proto.getFoo = function() {
+    prototype.getFoo = function() {
       return _(this).foo;
     };
-    proto.getBar = function() {
+    prototype.getBar = function() {
       return _(this).bar;
     };
   });
@@ -10274,8 +10274,8 @@ test('Class#construct'
   t.plan(1);
 
   var init = sinon.spy();
-  var cls = new Class(function(proto) {
-    proto.init = init;
+  var cls = new Class(function(prototype) {
+    prototype.init = init;
   });
   var Ctor = cls.construct();
 
@@ -10287,13 +10287,13 @@ test('Class#construct'
 var test = require('tape');
 var ctor = require('../');
 
-var Citizen = ctor(function(proto, _, _protected) {
+var Citizen = ctor(function(prototype, _, _protected) {
   // Public methods.
-  proto.init = function(name, age) {
+  prototype.init = function(name, age) {
     _(this).name = name;
     _(this).age = age;
   };
-  proto.vote = function(politician) {
+  prototype.vote = function(politician) {
     if (_(this).allowedToVote()) {
       console.log(_(this).name + ' voted for ' + politician);
     } else {
@@ -10306,12 +10306,12 @@ var Citizen = ctor(function(proto, _, _protected) {
   };
 });
 
-var Criminal = Citizen.subclass(function(proto, _, _protected) {
+var Criminal = Citizen.subclass(function(prototype, _, _protected) {
   // the `vote` method is not defined here because it's
   // inherited from the Citizen class.
-  proto.init = function(name, age, crime) {
+  prototype.init = function(name, age, crime) {
     _(this).crime = crime;
-    proto.super.init.call(this, name, age);
+    prototype.super.init.call(this, name, age);
   };
   _protected.allowedToVote = function() {
     return _(this).crime != 'felony'
@@ -10367,11 +10367,11 @@ test('Protected properties can be accessed using the'
 
   t.plan(1);
 
-  var Ctor = ctor(function(proto, _) {
-    proto.init = function(name) {
+  var Ctor = ctor(function(prototype, _) {
+    prototype.init = function(name) {
       _(this).name = name;
     };
-    proto.getName = function() {
+    prototype.getName = function() {
       return _(this).name;
     };
   });
@@ -10385,8 +10385,8 @@ test('Protected methods can be called on the protected instance.', function(t) {
   t.plan(1);
   var protectedMethod = sinon.spy();
 
-  var Ctor = ctor(function(proto, _, _protected) {
-    proto.publicMethod = function() {
+  var Ctor = ctor(function(prototype, _, _protected) {
+    prototype.publicMethod = function() {
       _(this).protectedMethod();
     };
     _protected.protectedMethod = protectedMethod;
@@ -10402,11 +10402,11 @@ test('Private properties can be accessed using the'
 
   t.plan(1);
 
-  var Ctor = ctor(function(proto, _, __protected, __) {
-    proto.init = function(name) {
+  var Ctor = ctor(function(prototype, _, __protected, __) {
+    prototype.init = function(name) {
       __(this).name = name;
     };
-    proto.getName = function() {
+    prototype.getName = function() {
       return __(this).name;
     };
   });
@@ -10420,8 +10420,8 @@ test('Private methods can be called on the private instance.', function(t) {
   t.plan(1);
   var privateMethod = sinon.spy();
 
-  var Ctor = ctor(function(proto, _, __protected, __, __private) {
-    proto.publicMethod = function() {
+  var Ctor = ctor(function(prototype, _, __protected, __, __private) {
+    prototype.publicMethod = function() {
       __(this).privateMethod();
     };
     __private.privateMethod = privateMethod;
@@ -10436,21 +10436,21 @@ test('Prototype methods can call super.', function(t) {
 
   t.plan(1);
 
-  var Parent = ctor(function(proto) {
-    proto.method = function() {
+  var Parent = ctor(function(prototype) {
+    prototype.method = function() {
       return 'foo';
     };
   });
 
-  var Child = Parent.subclass(function(proto) {
-    proto.method = function() {
-      return proto.super.method.call(this) + 'bar';
+  var Child = Parent.subclass(function(prototype) {
+    prototype.method = function() {
+      return prototype.super.method.call(this) + 'bar';
     };
   });
 
-  var GrandChild = Child.subclass(function(proto) {
-    proto.method = function() {
-      return proto.super.method.call(this) + 'baz';
+  var GrandChild = Child.subclass(function(prototype) {
+    prototype.method = function() {
+      return prototype.super.method.call(this) + 'baz';
     };
   });
 
@@ -10466,13 +10466,13 @@ test('Prototype methods are inherited from their parent.', function(t) {
   var parentTwo = sinon.spy();
   var childOne = sinon.spy();
 
-  var Parent = ctor(function(proto) {
-    proto.one = parentOne;
-    proto.two = parentTwo;
+  var Parent = ctor(function(prototype) {
+    prototype.one = parentOne;
+    prototype.two = parentTwo;
   });
 
-  var Child = Parent.subclass(function(proto) {
-    proto.one = childOne;
+  var Child = Parent.subclass(function(prototype) {
+    prototype.one = childOne;
   });
 
   var GrandChild = Child.subclass(function() {});
@@ -10490,8 +10490,8 @@ test('Protected methods can call super.', function(t) {
 
   t.plan(1);
 
-  var Parent = ctor(function(proto, _, _protected) {
-    proto.callProtectedMethod = function() {
+  var Parent = ctor(function(prototype, _, _protected) {
+    prototype.callProtectedMethod = function() {
       return _(this).method();
     };
     _protected.method = function() {
@@ -10499,13 +10499,13 @@ test('Protected methods can call super.', function(t) {
     };
   });
 
-  var Child = Parent.subclass(function(proto, _, _protected) {
+  var Child = Parent.subclass(function(prototype, _, _protected) {
     _protected.method = function() {
       return _protected.super.method.call(_(this)) + 'bar';
     };
   });
 
-  var GrandChild = Child.subclass(function(proto, _, _protected) {
+  var GrandChild = Child.subclass(function(prototype, _, _protected) {
     _protected.method = function() {
       return _protected.super.method.call(_(this)) + 'baz';
     };
@@ -10523,15 +10523,15 @@ test('Protected methods are inherited from their parent.', function(t) {
   var parentTwo = sinon.spy();
   var childOne = sinon.spy();
 
-  var Parent = ctor(function(proto, _, _protected) {
-    proto.callProtected = function(method) {
+  var Parent = ctor(function(prototype, _, _protected) {
+    prototype.callProtected = function(method) {
       _(this)[method]();
     };
     _protected.one = parentOne;
     _protected.two = parentTwo;
   });
 
-  var Child = Parent.subclass(function(proto, _, _protected) {
+  var Child = Parent.subclass(function(prototype, _, _protected) {
     _protected.one = childOne;
   });
 
@@ -10550,9 +10550,9 @@ test('Private methods do not have parents.', function(t) {
 
   t.plan(2);
 
-  var Parent = ctor(function(proto, _, _protected, __, __private) {});
+  var Parent = ctor(function(prototype, _, _protected, __, __private) {});
 
-  var Child = Parent.subclass(function(proto, _, _protected, __, __private) {
+  var Child = Parent.subclass(function(prototype, _, _protected, __, __private) {
     t.ok(__private);
     t.notOk(__private.super);
   });

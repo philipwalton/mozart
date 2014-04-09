@@ -73,15 +73,15 @@ The class definition is a function that is invoked with five arguments: the publ
 ```javascript
 var ctor = require('mozart');
 
-var Citizen = ctor(function(proto, _, _protected) {
+var Citizen = ctor(function(prototype, _, _protected) {
 
   // == PUBLIC ==
 
-  proto.init = function(name, age) {
+  prototype.init = function(name, age) {
     _(this).name = name;
     _(this).age = age;
   };
-  proto.vote = function(politician) {
+  prototype.vote = function(politician) {
     if (_(this).allowedToVote()) {
       console.log(_(this).name + ' voted for ' + politician);
     } else {
@@ -100,11 +100,11 @@ var Citizen = ctor(function(proto, _, _protected) {
 The above class definition uses both public and protected methods. The next example subclasses `Citizen`. As you can see, both public and protected methods are able to either inherit methods from their superclass or override them while still being able to invoke their supermethod.
 
 ```javascript
-var Criminal = Citizen.subclass(function(proto, _, _protected) {
+var Criminal = Citizen.subclass(function(prototype, _, _protected) {
 
-  proto.init = function(name, age, crime) {
+  prototype.init = function(name, age, crime) {
     _(this).crime = crime;
-    proto.super.init.call(this, name, age);
+    prototype.super.init.call(this, name, age);
   };
 
   _protected.allowedToVote = function() {
@@ -126,17 +126,17 @@ With Mozart you can take the same approach, and it gives you a way to dynamicall
 Here's how you'd write getters and setters manually:
 
 ```javascript
-var Citizen = ctor(function(proto, _) {
-  proto.getName = function() {
+var Citizen = ctor(function(prototype, _) {
+  prototype.getName = function() {
     return _(this).name;
   };
-  proto.setName = function(value) {
+  prototype.setName = function(value) {
     _(this).name = value;
   };
-  proto.getAge = function() {
+  prototype.getAge = function() {
     return _(this).age;
   };
-  proto.setAge = function(value) {
+  prototype.setAge = function(value) {
     _(this).age = value;
   };
 };
@@ -193,13 +193,13 @@ The class definition function is invoked with the returned constructor as its `t
 By convention, those arguments are usually written as follows:
 
 ```javascript
-var MyConstructor = ctor(function(proto, _, _protected, __, __private) {
+var MyConstructor = ctor(function(prototype, _, _protected, __, __private) {
   // Define the public, protected, and private methods...
 })
 ```
 
 **publicPrototype**
-`proto` {Object} The prototype of the returned constructor. In the above example, `proto` would equal `MyConstructor.prototype`.
+`prototype` {Object} The prototype of the returned constructor. In the above example, `prototype` would equal `MyConstructor.prototype`.
 
 **protectedKey**
 `_` {Function} The protected key. This is used to get and set protected instance properties. Protected instances can be accessed by the current class and its subclasses. (See [Private Parts](https://github.com/philipwalton/private-parts#the-key-function) for more information on key functions.)
@@ -208,7 +208,7 @@ var MyConstructor = ctor(function(proto, _, _protected, __, __private) {
 `_protected` {Object} The protected prototype. Use this object to store protected methods that are shared by all protected instances. Protected methods can be accessed by the current class and its subclasses.
 
 **privateKey**
-`__` {Function} The private key. This is used to get and set private instance properties. Private instances can only be accessed by the current class. (See [Private Parts](https://github.com/philipwalton/private-parts#the-key-function) for more information on key functions.)
+`__` {Function} The private key. This is used to get and set private instance properties. Private instances can only be accessed by the current class. (See [Priva`te Parts](https://github.com/philipwalton/private-parts#the-key-function) for more information on key functions.)
 
 **privatePrototype**
 `__private` {Object} The private prototype. Use this object to store private methods that are shared by all private instances. Private methods can only be accessed by the current class.

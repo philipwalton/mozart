@@ -243,8 +243,8 @@ test('Class#construct'
   t.plan(1);
 
   var init = sinon.spy();
-  var cls = new Class(function(proto) {
-    proto.init = init;
+  var cls = new Class(function(prototype) {
+    prototype.init = init;
   });
   var Ctor = cls.construct();
 

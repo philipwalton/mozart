@@ -6,9 +6,9 @@ test('Constructor prototypes can dynamically add getters methods to themselves'
 
   t.plan(2);
 
-  var Ctor = ctor(function(proto, _) {
+  var Ctor = ctor(function(prototype, _) {
     this.addGetters('foo', 'bar');
-    proto.init = function(foo, bar) {
+    prototype.init = function(foo, bar) {
       _(this).foo = foo;
       _(this).bar = bar;
     };
@@ -24,12 +24,12 @@ test('Constructor prototypes can dynamically add setter methods to themselves'
 
   t.plan(2);
 
-  var Ctor = ctor(function(proto, _) {
+  var Ctor = ctor(function(prototype, _) {
     this.addSetters('foo', 'bar');
-    proto.getFoo = function() {
+    prototype.getFoo = function() {
       return _(this).foo;
     };
-    proto.getBar = function() {
+    prototype.getBar = function() {
       return _(this).bar;
     };
   });
