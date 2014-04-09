@@ -208,7 +208,7 @@ var MyConstructor = ctor(function(prototype, _, _protected, __, __private) {
 `_protected` {Object} The protected prototype. Use this object to store protected methods that are shared by all protected instances. Protected methods can be accessed by the current class and its subclasses.
 
 **privateKey**
-`__` {Function} The private key. This is used to get and set private instance properties. Private instances can only be accessed by the current class. (See [Priva`te Parts](https://github.com/philipwalton/private-parts#the-key-function) for more information on key functions.)
+`__` {Function} The private key. This is used to get and set private instance properties. Private instances can only be accessed by the current class. (See [Private Parts](https://github.com/philipwalton/private-parts#the-key-function) for more information on key functions.)
 
 **privatePrototype**
 `__private` {Object} The private prototype. Use this object to store private methods that are shared by all private instances. Private methods can only be accessed by the current class.
