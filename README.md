@@ -121,7 +121,7 @@ var joe = new Criminal('Joe', 27, 'felony');
 joe.vote('Obama') // Throws: Joe is not allowed to vote.
 ```
 
-In case it's not clear what's going on here, the class definition is providing you with two prototypes to define methods on. The public (regular) prototype, and the protected prototype (passed as `_protected`). Protected methods and properties are accessed using the protected key (stored here on `_`), and regular methods are accessed using `this` as usual.
+In case it's not clear what's going on here, the class definition is providing you with two prototypes to define methods on. The public (regular) prototype, and the protected prototype (the `_protected` variable). Protected methods and properties are accessed using the protected key (the `_` variable), and regular methods are accessed using `this` as usual.
 
 When calling `subclass` on a constructor, a new class is formed that extends both the public and protected prototypes and makes them available to the subclass definition. It also stores a property called `super` that points to the parent class' respective prototypes for easy super method invocation. The protected key is also passed to the subclass allowing all instances of this class hierarchy to access it.
 
