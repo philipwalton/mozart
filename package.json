@@ -1,6 +1,6 @@
 {
   "name": "mozart",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Bringing public, private, and protected to JavaScript classes.",
   "main": "index.js",
   "author": "philipwalton",
