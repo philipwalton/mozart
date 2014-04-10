@@ -309,14 +309,14 @@ function Buffer (subject, encoding, noZero) {
   else if (type === 'string')
     length = Buffer.byteLength(subject, encoding)
   else if (type === 'object')
-    length = coerce(subject.length) // Assume object is an array
+    length = coerce(subject.length) // assume that object is array-like
   else
     throw new Error('First argument needs to be a number, array or string.')
 
   var buf
   if (Buffer._useTypedArrays) {
     // Preferred: Return an augmented `Uint8Array` instance for best performance
-    buf = augment(new Uint8Array(length))
+    buf = Buffer._augment(new Uint8Array(length))
   } else {
     // Fallback: Return THIS instance of Buffer (created by `new`)
     buf = this
@@ -325,9 +325,8 @@ function Buffer (subject, encoding, noZero) {
   }
 
   var i
-  if (Buffer._useTypedArrays && typeof Uint8Array === 'function' &&
-      subject instanceof Uint8Array) {
-    // Speed optimization -- use set if we're copying from a Uint8Array
+  if (Buffer._useTypedArrays && typeof subject.byteLength === 'number') {
+    // Speed optimization -- use set if we're copying from a typed array
     buf._set(subject)
   } else if (isArrayish(subject)) {
     // Treat array-ish objects as a byte array
@@ -630,7 +629,7 @@ Buffer.prototype.copy = function (target, target_start, start, end) {
     for (var i = 0; i < len; i++)
       target[i + target_start] = this[i + start]
   } else {
-    target._set(new Uint8Array(this.buffer, start, len), target_start)
+    target._set(this.subarray(start, start + len), target_start)
   }
 }
 
@@ -700,7 +699,7 @@ Buffer.prototype.slice = function (start, end) {
   end = clamp(end, len, len)
 
   if (Buffer._useTypedArrays) {
-    return augment(this.subarray(start, end))
+    return Buffer._augment(this.subarray(start, end))
   } else {
     var sliceLen = end - start
     var newBuf = new Buffer(sliceLen, undefined, true)
@@ -1168,9 +1167,9 @@ function stringtrim (str) {
 var BP = Buffer.prototype
 
 /**
- * Augment the Uint8Array *instance* (not the class!) with Buffer methods
+ * Augment a Uint8Array *instance* (not the Uint8Array class!) with Buffer methods
  */
-function augment (arr) {
+Buffer._augment = function (arr) {
   arr._isBuffer = true
 
   // save reference to original Uint8Array get/set methods before overwriting
@@ -2174,8 +2173,8 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-}).call(this,require("/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8}],10:[function(require,module,exports){
+}).call(this,require("/Users/philip/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"/Users/philip/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8}],10:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3412,8 +3411,8 @@ function indexOf (xs, x) {
   return -1;
 }
 
-}).call(this,require("/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"./index.js":11,"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"buffer":3,"events":6,"inherits":7,"process/browser.js":12,"string_decoder":17}],15:[function(require,module,exports){
+}).call(this,require("/Users/philip/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"./index.js":11,"/Users/philip/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"buffer":3,"events":6,"inherits":7,"process/browser.js":12,"string_decoder":17}],15:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4796,8 +4795,8 @@ function hasOwnProperty(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
-}).call(this,require("/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":18,"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"inherits":7}],20:[function(require,module,exports){
+}).call(this,require("/Users/philip/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./support/isBuffer":18,"/Users/philip/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"inherits":7}],20:[function(require,module,exports){
 /**
  * A function that returns a function that allows you to associate
  * a public object with its private counterpart.
@@ -5781,8 +5780,8 @@ var sinon = (function (formatio) {
         sinon.behavior = proto;
     }
 }(typeof sinon == "object" && sinon || null));
-}).call(this,require("/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"../sinon":21,"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8}],24:[function(require,module,exports){
+}).call(this,require("/Users/philip/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"../sinon":21,"/Users/philip/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8}],24:[function(require,module,exports){
 /**
   * @depend ../sinon.js
   * @depend match.js
@@ -8873,8 +8872,8 @@ function createHarness (conf_) {
     return test;
 }
 
-}).call(this,require("/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"./lib/default_stream":37,"./lib/results":38,"./lib/test":39,"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"defined":43,"through":47}],37:[function(require,module,exports){
+}).call(this,require("/Users/philip/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"./lib/default_stream":37,"./lib/results":38,"./lib/test":39,"/Users/philip/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"defined":43,"through":47}],37:[function(require,module,exports){
 var through = require('through');
 
 module.exports = function () {
@@ -9092,8 +9091,8 @@ function has (obj, prop) {
     return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
-}).call(this,require("/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"events":6,"inherits":44,"object-inspect":45,"resumer":46,"through":47}],39:[function(require,module,exports){
+}).call(this,require("/Users/philip/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"/Users/philip/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"events":6,"inherits":44,"object-inspect":45,"resumer":46,"through":47}],39:[function(require,module,exports){
 (function (process,__dirname){
 var Stream = require('stream');
 var deepEqual = require('deep-equal');
@@ -9555,8 +9554,8 @@ Test.skip = function (name_, _opts, _cb) {
 
 // vim: set softtabstop=4 shiftwidth=4:
 
-}).call(this,require("/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),"/../node_modules/tape/lib")
-},{"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"deep-equal":40,"defined":43,"events":6,"inherits":44,"path":9,"stream":11}],40:[function(require,module,exports){
+}).call(this,require("/Users/philip/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),"/../node_modules/tape/lib")
+},{"/Users/philip/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"deep-equal":40,"defined":43,"events":6,"inherits":44,"path":9,"stream":11}],40:[function(require,module,exports){
 var pSlice = Array.prototype.slice;
 var objectKeys = require('./lib/keys.js');
 var isArguments = require('./lib/is_arguments.js');
@@ -9855,8 +9854,8 @@ module.exports = function (write, end) {
     return tr;
 };
 
-}).call(this,require("/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"through":47}],47:[function(require,module,exports){
+}).call(this,require("/Users/philip/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"/Users/philip/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"through":47}],47:[function(require,module,exports){
 (function (process){
 var Stream = require('stream')
 
@@ -9967,8 +9966,8 @@ function through (write, end, opts) {
 }
 
 
-}).call(this,require("/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/Users/philipwalton/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"stream":11}],48:[function(require,module,exports){
+}).call(this,require("/Users/philip/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"/Users/philip/Projects/mozart/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":8,"stream":11}],48:[function(require,module,exports){
 var test = require('tape');
 var ctor = require('../');
 
