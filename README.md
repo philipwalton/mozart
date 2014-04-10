@@ -20,7 +20,7 @@ Mozart is a full-featured, classical inheritance library for Node.js and the bro
 - Intuitive super method calling.
 - Dynamic getter and setter generation.
 
-Unlike most JS inheritence libraries, Mozart does more than just hide away the prototype boilerplate that nobody likes to remember. It also offers real data encapsulation, similiar to what you'd find to most classical languages. Mozart uses the [Private Parts](https://github.com/philipwalton/private-parts) module so you no longer have to prefix your properties with an underscore and hope that nobody touches them. Your public interface can be exactly what you want it to be.
+Unlike most JS inheritance libraries, Mozart does more than just hide away the prototype boilerplate that nobody likes to remember. It also offers real data encapsulation, similar to what you'd find to most classical languages. Mozart uses the [Private Parts](https://github.com/philipwalton/private-parts) module so you no longer have to prefix your properties with an underscore and hope that nobody touches them. Your public interface can be exactly what you want it to be.
 
 ## Installation
 
@@ -32,7 +32,7 @@ To install from NPM:
 npm install --save mozart
 ```
 
-From Bower:
+To install from Bower:
 
 ```sh
 bower install --save mozart
@@ -42,7 +42,7 @@ Or you can download the [latest version](https://raw.githubusercontent.com/phili
 
 ## Getting Started
 
-Mozart provides a single factory method that can be used to create new constructors. When given no arguments, an annoymous constructor is returned. If passed a name, a constructor is created with that name. *(Note, named constructors can be useful for debugging.)*
+Mozart provides a single factory method that can be used to create new constructors. When given no arguments, an anonymous constructor is returned. If passed a name, a constructor is created with that name (named constructors can be useful for debugging)*.
 
 ```javascript
 var ctor = require('mozart');
@@ -56,7 +56,7 @@ var Bar = ctor('Bar');
 
 If you're failing to see why the above code is useful, don't worry. The real value provided by Mozart comes from passing a class definition to the constructor factory (which I'll explain later). That being said, there are a few differences between Mozart constructors and regular JavaScript constructors worth pointing out.
 
-The primary difference is that Mozart constructors are created for you, meaning you don't have the ability to add any logic to them. This is intentional as much of the headache around traditional JS classical inheritance patterns comes from the fact that constructors are different from prototype methods and can't be invoked in all the same ways.
+The primary difference is that Mozart constructors are created for you, meaning you don't have the option to add any logic to them. This is intentional as much of the headache around traditional JS classical inheritance patterns comes from the fact that constructors are different from prototype methods and can't be invoked in all the same ways.
 
 To solve this problem, the one (and only) thing Mozart constructors do is look for an `init` method on the prototype and (if found) call it (with the same arguments passed to the constructor). Moving the constructor logic to a prototype method simplifies everything. Inheritance is easier, and super methods can all be invoked in the same way.
 
@@ -66,9 +66,11 @@ In addition to this, Mozart constructors are packaged with five convenience meth
 
 The real power of the constructor factory method comes when you pass it a class definition. With a class definition you can write classes with public, private, and protected methods and properties.
 
-The class definition is a function that is invoked with five arguments: the public prototype, the protected key function, the protected methods object, the private key function, and the private methods object. A detailed description of each can be found in the [API documentation](#api-documentation).
+The class definition is a function that is invoked with five arguments: the public prototype, the protected key function, the protected prototype, the private key function, and the private prototype. A detailed description of each can be found in the [API documentation](#api-documentation).
 
 **Note**: if you don't know what a "key function" is, check out the [Private Parts](https://github.com/philipwalton/private-parts) module to learn more.
+
+Here's an example of Mozart in action:
 
 ```javascript
 var ctor = require('mozart');
@@ -97,7 +99,9 @@ var Citizen = ctor(function(prototype, _, _protected) {
 });
 ```
 
-The above class definition uses both public and protected methods. The next example subclasses `Citizen`. As you can see, both public and protected methods are able to either inherit methods from their superclass or override them while still being able to invoke their super method.
+The above citizen class defines both public and protected methods and uses the passed key function to store data on the instance.
+
+To subclass citizen, simply call its `subclass` method. As you'll see, two of the methods in this subclass (`init` and `allowedToVote`) are overridden and call super, and the `vote` method is simply inherited as you'd expect from a subclass.
 
 ```javascript
 var Criminal = Citizen.subclass(function(prototype, _, _protected) {
@@ -117,11 +121,15 @@ var joe = new Criminal('Joe', 27, 'felony');
 joe.vote('Obama') // Throws: Joe is not allowed to vote.
 ```
 
+In case it's not clear what's going on here, the class definition is providing you with two prototypes to define methods on. The public (regular) prototype, and the protected prototype (passed as `_protected`). Protected methods and properties are accessed using the protected key (stored here on `_`), and regular methods are accessed using `this` as usual.
+
+When calling `subclass` on a constructor, a new class is formed that extends both the public and protected prototypes and makes them available to the subclass definition. It also stores a property called `super` that points to the parent class' respective prototypes for easy super method invocation. The protected key is also passed to the subclass allowing all instances of this class hierarchy to access it.
+
 ### Getters and Setters
 
 In most object oriented languages with classes, all instance variables are private (or protected) by default and the only way to access them is to create getters and setters.
 
-With Mozart you can take the same approach, and it gives you a way to dynamically generate those methods to avoid extraneous typing.
+With Mozart you can take the same approach, and you're provided a way to dynamically generate those methods to avoid extraneous typing.
 
 Here's how you'd write getters and setters manually:
 
@@ -151,7 +159,7 @@ var Citizen = ctor(function() {
 };
 ```
 
-The above example calls the `addGetters` and `addSetters` methods on `this`, which in the context of the class definition is the contructor itself. It could alternatively have been written outside of the class definition:
+The above example calls the `addGetters` and `addSetters` methods on `this`, which in the context of the class definition is the constructor itself. It could alternatively have been written outside of the class definition:
 
 ```javascript
 var Citizen = ctor();
@@ -159,7 +167,7 @@ Citizen.addGetters('name', 'age');
 Citizen.addSetters('name', 'age');
 ```
 
-Lastly, if you want to add a getter and setter for the same property you could simply use `addAccessors`.
+Lastly, if you want to add a getter and setter for the same property you could simply use `addAccessors`, which does both at the same time.
 
 ```javascript
 var Citizen = ctor();
@@ -174,27 +182,27 @@ Citizen.addAccessors('name', 'age');
 var ctor = require('mozart');
 ```
 
-The Mozart module consists of a single factory method that can be used to create new constructors from a given class definition. All future examples assume the contructor factory is stored on the variable `ctor` as in the above example.
+The Mozart module consists of a single factory method that can be used to create new constructors from a given class definition. All future examples assume the constructor factory is stored on the variable `ctor` as in the above example.
 
 #### ctor(*[name]*, *[definition]*)
 
 Create a new constructor with an optional name and optional class definition.
 
-**`name`**: {string} *(optional)* The name of the constructor. Names can be useful for debugging.
+**`name`**: {string} *(optional)* The name of the constructor.
 
-**`definition`**: {Function} *(optional)* The class definition &mdash; a function that is invoked with the public, protected, and private keys and method objects.
+**`definitionn`**: {Function} *(optional)* The class definition &mdash; a function that is invoked with the public, protected, and private keys and method objects.
 
 ### The Class Definition
 
 The class definition is the function passed to the constructor factory. This function defines the public, private, and protected methods.
 
-The class definition function is invoked with the returned constructor as its `this` context and passed the following five arguments: *prototype*, *protectedKey*, *protectedPrototype*, *privateKey*, and *privatePrototype*.
+The class definition function is invoked with the created constructor as its `this` context, and it's passed the following five arguments: *prototype*, *protectedKey*, *protectedPrototype*, *privateKey*, and *privatePrototype*.
 
 By convention, those arguments are usually written as follows:
 
 ```javascript
 var MyConstructor = ctor(function(prototype, _, _protected, __, __private) {
-  // Define the public, protected, and private methods...
+  // ...
 })
 ```
 
@@ -202,26 +210,26 @@ var MyConstructor = ctor(function(prototype, _, _protected, __, __private) {
 `prototype` {Object} The prototype of the returned constructor. In the above example, `prototype` would equal `MyConstructor.prototype`.
 
 **protectedKey**
-`_` {Function} The protected key. This is used to get and set protected instance properties. Protected instances can be accessed by the current class and its subclasses. (See [Private Parts](https://github.com/philipwalton/private-parts#the-key-function) for more information on key functions.)
+`_` {Function} The protected key. This is used to get and set protected instance members. Protected instances can be accessed by the current class and its subclasses. (See [Private Parts](https://github.com/philipwalton/private-parts#the-key-function) for more information on key functions.)
 
 **protectedPrototype**
-`_protected` {Object} The protected prototype. Use this object to store protected methods that are shared by all protected instances. Protected methods can be accessed by the current class and its subclasses.
+`_protected` {Object} The protected prototype. Use this object to store protected methods that are shared by all protected instances. Protected methods can be accessed by the current class and are inherited by its subclasses.
 
 **privateKey**
 `__` {Function} The private key. This is used to get and set private instance properties. Private instances can only be accessed by the current class. (See [Private Parts](https://github.com/philipwalton/private-parts#the-key-function) for more information on key functions.)
 
 **privatePrototype**
-`__private` {Object} The private prototype. Use this object to store private methods that are shared by all private instances. Private methods can only be accessed by the current class.
+`__private` {Object} The private prototype. Use this object to store private methods that are shared by all private instances. Private methods can only be accessed by the current class. They are *not* inherited by subclasses.
 
-*Note:* as with all JavaScript function, you only need to list the arguments that you need. If you don't need both private and protected methods, you can leave off the private arguments.
+*Note:* as with all JavaScript functions, you only need to list the arguments that you actually need. If you don't need both private and protected methods, you can leave off the unnecessary arguments.
 
 ### The Returned Constructor
 
-The returned constructor is just a normal JavaScript constructor, but it has five convience methods mixed in.
+The returned constructor is just a normal JavaScript constructor, but it has five convenience methods mixed in.
 
 #### Constructor.subclass(*[name]*, *[definition]*)
 
-Once you have a constructor that was made using Mozart's constructor factory, you can easily subclass it. Subclassing returns a new constructor whose prototype has the parent constructor's prototype in it's chain. Subclassing also sets up the prototype chain for the protected methods, allowing you to invoke super.
+Once you have a constructor that was made using Mozart's constructor factory, you can easily subclass it. Subclassing returns a new constructor whose prototype has the parent constructor's prototype in its chain. Subclassing also sets up the prototype chain for the protected methods, allowing you to invoke super.
 
 #### Constructor.addGetters(prop1, *[prop2]*, *[...propN]*)
 
@@ -275,6 +283,6 @@ Mozart uses [Browserify](http://browserify.org/) to build the browser version of
 
 While Mozart is a working library it's also a proof-of-concept for how inheritance and privacy could be done better in JavaScript. It's not a finished product, it's a work in progress.
 
-I'm completely willing to listen to feedback and discuss ways to make the API better and more intuitive.
+I'm completely willing to listen to feedback and discuss ways to make the API simpler and more intuitive.
 
 If you'd like to make a suggestion, feel free to open an issue or submit a pull request.
